@@ -1,0 +1,86 @@
+@model TaskEFC.Models.OrderIndexData
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Orders</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                OrderDate
+            </th>
+            <th>
+                Customer
+            </th>
+            <th>
+                SuperMarket
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Orders) {
+        string selectedRow = "";
+        if (item.Id == (int?)ViewData["OrderId"])
+        {
+            selectedRow = "table-success";
+        }
+        <tr class="@selectedRow">
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderDate)
+            </td>
+            <td>
+                @item.Customer?.FirstName @item.Customer?.LastName
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SuperMarket!.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Index" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@if (Model.OrderDetails.Any())
+{
+    <h3>Order Details</h3>
+    <p>
+        <a asp-controller="OrderDetails" asp-action="Create" asp-route-orderId="@ViewData["OrderId"]">Add Product to Order</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.OrderDetails)
+        {
+            <tr>
+                <td>
+                    @item.Product?.Name
+                </td>
+                <td>
+                    @item.Quantity
+                </td>
+                <td>
+                    <a asp-controller="OrderDetails" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="OrderDetails" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
